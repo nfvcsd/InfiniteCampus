@@ -1,5 +1,6 @@
 .DS_Store
 config.json
+1config.json
 /barcodes
 /pdfs
 classes/__pycache__/
