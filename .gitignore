@@ -1,8 +1,8 @@
 .DS_Store
 config.json
 1config.json
-/barcodes
-/pdfs
+/barcodes/*
+/pdfs/*
 classes/__pycache__/
 # Byte-compiled / optimized / DLL files
 __pycache__/
