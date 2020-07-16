@@ -1,3 +1,5 @@
+#!/opt/nfv/bin/python3.8
+
 import os
 import json
 
@@ -29,7 +31,7 @@ class Credentials:
 
     def api_call(self, endpoint):
         test = OAuth1Session(self.key, client_secret=self.secret)
-        r = test.get(f"{self.url}{endpoint}")
+        r = test.get(f"{self.url}{endpoint}?limit=5000")
         return r.json()
 
     def get_student_ids(self):
