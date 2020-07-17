@@ -1,10 +1,9 @@
 #!/opt/nfv/bin/python3.8
-
-from classes.Credentials import Credentials
+from classes.CampusStudents import Students
 from classes.GenerateBarcodes import StringToBarcode
 from classes.Pdf import barcodepdf
 
-auth = Credentials("campus")
+students = Students()
 barcode = StringToBarcode("barcode")
 pdfgen = barcodepdf("pdf")
 
@@ -26,7 +25,7 @@ def create_pdf(index, name, id):
 
 
 def main():
-    data = auth.get_student_ids()
+    data = students.get_student_ids()
     for person in data:
         barcode.generate(person["ID"], person["ID"])
     i = 1

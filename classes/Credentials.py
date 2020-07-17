@@ -33,16 +33,3 @@ class Credentials:
         test = OAuth1Session(self.key, client_secret=self.secret)
         r = test.get(f"{self.url}{endpoint}?limit=5000")
         return r.json()
-
-    def get_student_ids(self):
-        data = []
-        self.get_credentials()
-        r = self.api_call("students")
-        for user in r["users"]:
-            sourcedid = user["sourcedId"]
-            name = f"{user['givenName']} {user['familyName']}"
-            if sourcedid[0] == "s":
-                sourcedid = f"{sourcedid[1:]}"
-            sourcedid = int(sourcedid)
-            data.append({"name": name, "ID": f"{sourcedid:04}"})
-        return data
