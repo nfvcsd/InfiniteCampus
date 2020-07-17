@@ -3,6 +3,7 @@ import barcode
 from barcode import EAN13
 from barcode.writer import ImageWriter
 import os
+from pathlib import Path
 
 
 class StringToBarcode:
@@ -18,3 +19,12 @@ class StringToBarcode:
         ean = barcode.get("Code128", f"{string}", writer=ImageWriter())
         filename = ean.save(file, options={"write_text": False})
         return filename
+
+    def clean(self):
+        """This removes all of the files in ./barcodes"""
+        path = os.path.join(os.path.dirname(__file__), "../barcodes/")
+        for f in Path(path).glob("*.png"):
+            try:
+                f.unlink()
+            except OSError as e:
+                print("Error: %s : %s" % (f, e.strerror))

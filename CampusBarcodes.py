@@ -38,6 +38,7 @@ def main():
             create_pdf(i, person["name"], person["ID"])
             i = 1
     pdfgen.save_pdf("barcodes")
+    barcode.clean()
 
 
 if __name__ == "__main__":
