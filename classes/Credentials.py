@@ -15,6 +15,7 @@ class Credentials:
         self.key = ""
         self.secret = ""
         self.url = ""
+        self.schools = ""
 
     def get_credentials(
         self, file=os.path.join(os.path.dirname(__file__), "../config.json")
@@ -28,8 +29,12 @@ class Credentials:
                 self.key = data["api_key"]
                 self.secret = data["api_secret"]
                 self.url = data["base_url"]
+                self.schools = data["schools"]
 
     def api_call(self, endpoint):
         test = OAuth1Session(self.key, client_secret=self.secret)
         r = test.get(f"{self.url}{endpoint}?limit=5000")
         return r.json()
+
+    def get_schools(self):
+        return self.schools

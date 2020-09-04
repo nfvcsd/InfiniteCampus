@@ -25,3 +25,15 @@ class Students:
     def get_student(self, pid):
         r = self.auth.api_call(f"students/{pid}")
         return r
+
+    def get_schools(self):
+        r = self.auth.api_call(f"schools")
+        return r
+
+    def get_school(self, pid):
+        r = self.auth.api_call(f"schools/{pid}")
+        return r
+
+    def get_school_students(self, pid):
+        r = self.auth.api_call(f"schools/{pid}/students")
+        return r
