@@ -4,6 +4,7 @@ config.json
 /barcodes/*
 /pdfs/*
 /hmhsam/*
+/destiny/*
 classes/__pycache__/
 # Byte-compiled / optimized / DLL files
 __pycache__/

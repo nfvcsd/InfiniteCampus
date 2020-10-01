@@ -14,7 +14,7 @@ logname = f"{now}.log"
 loglocation = os.path.join(os.path.dirname(__file__), "hmhsam", f"{logname}")
 
 teachers = Teachers()
-schools = campus.auth.get_schools()
+schools = campus.auth.get_sam_schools()
 class_matches = campus.auth.get_classes()
 class_sourcedids = []
 # LOGGING SETUP

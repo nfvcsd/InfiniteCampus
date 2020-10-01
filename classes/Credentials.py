@@ -27,8 +27,10 @@ class Credentials:
         self.key = ""
         self.secret = ""
         self.url = ""
-        self.schools = ""
+        self.sam_schools = ""
         self.class_matches = ""
+        self.destiny_schools = ""
+        self.destiny_school_mapping = ""
 
     def get_credentials(
         self, file=os.path.join(os.path.dirname(__file__), "../config.json")
@@ -43,8 +45,10 @@ class Credentials:
                 self.key = data["api_key"]
                 self.secret = data["api_secret"]
                 self.url = data["base_url"]
-                self.schools = data["schools"]
+                self.sam_schools = data["SAMSchools"]
+                self.destiny_schools = data["DestinySchools"]
                 self.class_matches = data["class_matches"]
+                self.destiny_school_mapping = data["Destiny_School_Map"]
                 logger.info("Credentials Set")
 
     def api_call(self, endpoint):
@@ -54,8 +58,15 @@ class Credentials:
             logger.error("API Call returned non 200 status")
         return r.json()
 
-    def get_schools(self):
+    def get_sam_schools(self):
         return self.schools
+
+    def get_destiny_schools(self):
+        return self.destiny_schools
 
     def get_classes(self):
         return self.class_matches
+
+    def get_destiny_school_mapping(self):
+        """Returns the school mapping from the config file"""
+        return self.destiny_school_mapping

@@ -2,6 +2,8 @@
   "api_key": "",
   "api_secret": "",
   "base_url": "",
-  "schools": [],
-  "classes": []
+  "SAMSchools": [],
+  "DestinySchools": [],
+  "class_matches": [],
+  "Destiny_School_Map": {}
 }
