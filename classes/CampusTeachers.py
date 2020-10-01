@@ -1,3 +1,4 @@
+#!/opt/nfv/bin/python3.8
 from .Credentials import Credentials
 
 
@@ -20,8 +21,12 @@ class Teachers:
         for user in r["users"]:
             sourcedid = user["sourcedId"]
             name = f"{user['givenName']} {user['familyName']}"
-            if sourcedid[0] == "s":
+            if sourcedid[0] == "t":
                 sourcedid = f"{sourcedid[1:]}"
             sourcedid = int(sourcedid)
             data.append({"name": name, "ID": f"{sourcedid:04}"})
         return data
+
+    def get_class_teacher(self, sourcedId):
+        r = self.auth.api_call(f"classes/{sourcedId}/teachers")
+        return r["users"][0]

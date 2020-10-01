@@ -1,3 +1,4 @@
+#!/opt/nfv/bin/python3.8
 from .Credentials import Credentials
 
 
@@ -40,4 +41,8 @@ class Students:
 
     def get_student_classes(self, pid):
         r = self.auth.api_call(f"students/{pid}/classes")
+        return r
+
+    def get_class(self, sourcedId):
+        r = self.auth.api_call(f"classes/{sourcedId}")
         return r

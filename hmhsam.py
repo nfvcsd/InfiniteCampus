@@ -1,5 +1,6 @@
 #!/opt/nfv/bin/python3.8
 from classes.CampusStudents import Students
+from classes.CampusTeachers import Teachers
 import csv
 import os
 from datetime import datetime
@@ -12,10 +13,10 @@ campus = Students()
 logname = f"{now}.log"
 loglocation = os.path.join(os.path.dirname(__file__), "hmhsam", f"{logname}")
 
-
+teachers = Teachers()
 schools = campus.auth.get_schools()
 class_matches = campus.auth.get_classes()
-
+class_sourcedids = []
 # LOGGING SETUP
 logger = logging.getLogger("SAM")
 logger.setLevel(logging.DEBUG)
@@ -88,6 +89,13 @@ def student_csv():
                 for student_class in student_classes:
                     for match in class_matches:
                         if match in student_class["title"]:
+                            if (
+                                student_class["sourcedId"]
+                                not in class_sourcedids
+                            ):
+                                class_sourcedids.append(
+                                    student_class["sourcedId"]
+                                )
                             classname = f"{school_name} {grade}"
                             break
                 if sourcedid[0] == "s":
@@ -140,10 +148,38 @@ def teacher_csv():
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
+        for class_sourcedid in class_sourcedids:
+            # logger.info("Trying to get data for class: {class_sourcedid}")
+            class_data = teachers.get_class_teacher(class_sourcedid)
+            course_data = campus.get_class(class_sourcedid)
+            school_name = campus.get_school(
+                course_data["class"]["school"]["sourcedId"]
+            )["org"]["name"]
+            class_grade = int(course_data["class"]["title"][0])
+            class_name = f"{school_name} {class_grade:02}"
+            sourcedid = class_data["sourcedId"]
+            if sourcedid[0] == "t":
+                sourcedid = f"{sourcedid[1:]}"
+            sourcedid = int(sourcedid)
+            password = f"{(class_data['givenName'][:1]).upper()}{(class_data['familyName'][:1]).lower()}{sourcedid:06}"
+            # logger.info(class_data)
+            writer.writerow(
+                {
+                    "DISTRICT_USER_ID": class_data["sourcedId"],
+                    "FIRST_NAME": class_data["givenName"],
+                    "LAST_NAME": class_data["familyName"],
+                    "EMAIL": class_data["email"],
+                    "USER_NAME": class_data["username"],
+                    "PASSWORD": password,
+                    "SCHOOL_NAME": school_name,
+                    "CLASS_NAME": class_name,
+                }
+            )
 
 
 def main():
     student_csv()
+    teacher_csv()
 
 
 if __name__ == "__main__":
