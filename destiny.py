@@ -10,7 +10,7 @@ import typing
 # NFE, NFVHS, nfvms/vall, WUE
 now = datetime.now()
 campus = Students()
-
+errors = {}
 
 logname = f"{now}.log"
 loglocation = os.path.join(os.path.dirname(__file__), "destiny", f"{logname}")
@@ -22,7 +22,7 @@ school_map = campus.auth.get_destiny_school_mapping()
 logger = logging.getLogger("DESTINY")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
+ch.setLevel(logging.INFO)
 fh = logging.FileHandler(loglocation)
 fh.setLevel(logging.INFO)
 formatter = logging.Formatter(
@@ -109,6 +109,16 @@ def student_csv():
                 # password = f"{(student['givenName'][:1]).upper()}{(student['familyName'][:1]).lower()}{sourcedid:06}"
                 password = sourcedid
                 grade = student["grades"][0]
+                username = student["username"]
+                graduation_year = f"20{username[:2]}"
+                try:
+                    graduation_year = int(graduation_year)
+                except ValueError:
+                    errors[f"{fname} {lname}"] = "Graduation Year"
+                    logger.warning(
+                        f"Student {fname} {lname} does not have a user account starting with their graduation year!"
+                    )
+                    graduation_year = int(0000)
                 if grade[0] == "0":
                     grade = grade[1:]
                 try:
@@ -131,6 +141,7 @@ def student_csv():
                         "field_status": "A",
                         "field_isTeacher": "F",
                         "field_emailPrimary": student["email"],
+                        "field_graduationYear": graduation_year,
                     }
                 )
 

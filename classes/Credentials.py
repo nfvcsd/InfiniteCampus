@@ -38,9 +38,10 @@ class Credentials:
         logger.info("Checking For Credentials")
         with open(file, "r") as config:
             data = json.load(config)
+            ###### THIS SHOULDN'T WORK SHOULD IT? A FOR ELSE LOOP?
             for key in data:
                 if data[key] == "":
-                    logger.error(f"{key} is missing a value")
+                    logger.warning(f"{key} is missing a value")
             else:
                 self.key = data["api_key"]
                 self.secret = data["api_secret"]
