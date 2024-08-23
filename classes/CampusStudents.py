@@ -20,29 +20,29 @@ class Students:
         return data
 
     def get_students(self):
-        r = self.auth.api_call("students")
+        r = self.auth.api_call("rostering/v1p2/students")
         return r
 
     def get_student(self, pid):
-        r = self.auth.api_call(f"students/{pid}")
+        r = self.auth.api_call(f"rostering/v1p2/students/{pid}")
         return r
 
     def get_schools(self):
-        r = self.auth.api_call(f"schools")
+        r = self.auth.api_call("rostering/v1p2/schools")
         return r
 
     def get_school(self, pid):
-        r = self.auth.api_call(f"schools/{pid}")
+        r = self.auth.api_call(f"rostering/v1p2/schools/{pid}")
         return r
 
     def get_school_students(self, pid):
-        r = self.auth.api_call(f"schools/{pid}/students")
+        r = self.auth.api_call(f"rostering/v1p2/schools/{pid}/students")
         return r
 
     def get_student_classes(self, pid):
-        r = self.auth.api_call(f"students/{pid}/classes")
+        r = self.auth.api_call(f"rostering/v1p2/students/{pid}/classes")
         return r
 
     def get_class(self, sourcedId):
-        r = self.auth.api_call(f"classes/{sourcedId}")
+        r = self.auth.api_call(f"rostering/v1p2/classes/{sourcedId}")
         return r

@@ -5,7 +5,7 @@ import json
 import logging
 
 try:
-    from requests_oauthlib import OAuth1Session
+    import requests
 except ModuleNotFoundError:
     print("Please install requirements.txt")
 
@@ -31,6 +31,7 @@ class Credentials:
         self.class_matches = ""
         self.destiny_schools = ""
         self.destiny_school_mapping = ""
+        self.token_url = ""
 
     def get_credentials(
         self, file=os.path.join(os.path.dirname(__file__), "../config.json")
@@ -46,15 +47,30 @@ class Credentials:
                 self.key = data["api_key"]
                 self.secret = data["api_secret"]
                 self.url = data["base_url"]
+                self.token_url = data["token_url"]
                 self.sam_schools = data["SAMSchools"]
                 self.destiny_schools = data["DestinySchools"]
                 self.class_matches = data["class_matches"]
                 self.destiny_school_mapping = data["Destiny_School_Map"]
                 logger.info("Credentials Set")
+    def get_token(self):
+        url = self.token_url
+        data = {
+           "grant_type": "client_credentials",
+           "client_id": self.key,
+           "client_secret": self.secret
+        }
+        response = requests.post(url, data=data)
+        access_token = response.json()["access_token"]
+        return(access_token)
+
 
     def api_call(self, endpoint):
-        test = OAuth1Session(self.key, client_secret=self.secret)
-        r = test.get(f"{self.url}{endpoint}?limit=5000")
+        token = self.get_token()
+        headers = {
+                "Authorization": f"Bearer {token}"
+                }
+        r = requests.get(f"{self.url}{endpoint}?limit=5000", headers=headers)
         if r.status_code != 200:
             logger.error("API Call returned non 200 status")
         return r.json()

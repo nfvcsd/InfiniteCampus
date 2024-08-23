@@ -99,10 +99,11 @@ def student_csv():
             logger.info(f"Starting School {school_name}")
             students = campus.get_school_students(school)["users"]
             for student in students:
+                # print(student)
                 fname = student["givenName"]
                 lname = student["familyName"]
                 logger.info(f"Processing {fname} {lname}")
-                sourcedid = student["sourcedId"]
+                sourcedid = student["metadata"]["ic.legacySourcedId"]
                 if sourcedid[0] == "s":
                     sourcedid = f"{sourcedid[1:]}"
                 sourcedid = int(sourcedid)
@@ -111,6 +112,11 @@ def student_csv():
                 grade = student["grades"][0]
                 username = student["username"]
                 graduation_year = f"20{username[:2]}"
+                try:
+                    email = student["email"]
+                except KeyError:
+                    email = ""
+                    logger.warning(f"Student {fname} {lname} does not have an email")
                 try:
                     graduation_year = int(graduation_year)
                 except ValueError:
@@ -126,24 +132,25 @@ def student_csv():
                 except KeyError:
                     middleName = ""
                     logger.debug(f"No middle name for {fname} {lname}")
-                writer.writerow(
-                    {
-                        "field_firstName": student["givenName"],
-                        "field_lastName": student["familyName"],
-                        "field_password": password,
-                        "field_username": student["username"],
-                        "field_middleName": middleName,
-                        "field_barcode": f"P {sourcedid}",
-                        "field_districtID": sourcedid,
-                        "field_gradeLevel": grade,
-                        "field_siteShortName": school_name,
-                        "field_patronType": "Student",
-                        "field_status": "A",
-                        "field_isTeacher": "F",
-                        "field_emailPrimary": student["email"],
-                        "field_graduationYear": graduation_year,
-                    }
-                )
+                if email:
+                    writer.writerow(
+                        {
+                            "field_firstName": student["givenName"],
+                            "field_lastName": student["familyName"],
+                            "field_password": password,
+                            "field_username": student["username"],
+                            "field_middleName": middleName,
+                            "field_barcode": f"P {sourcedid}",
+                            "field_districtID": sourcedid,
+                            "field_gradeLevel": grade,
+                            "field_siteShortName": school_name,
+                            "field_patronType": "Student",
+                            "field_status": "A",
+                            "field_isTeacher": "F",
+                            "field_emailPrimary": email,
+                            "field_graduationYear": graduation_year,
+                        }
+                    )
 
 
 def main():
